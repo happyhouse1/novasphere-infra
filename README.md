@@ -9,8 +9,6 @@ Provisioning via Terraform, configuration via Ansible.
 - **Image Building** : Packer (AMI)
 - **CI/CD** : GitHub Actions (à venir)
 ## Structure du dépôt
-git add README.md
-git commit -m "Alice"## Auteur
 - Nom : Alice
 - Date de création : Today
 ## Structure du dépôt
