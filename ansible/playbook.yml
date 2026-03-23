@@ -1,0 +1,48 @@
+---
+- name: Configuration du serveur web NovaSphere
+  hosts: webservers  # TODO 2 : Groupe défini dans ton inventory/hosts.yml
+  become: true      # Exécuter en sudo pour installer des paquets
+  
+  tasks:
+    # --- Mise à jour du cache APT ---
+    - name: Mettre à jour le cache APT
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600 # Ne rafraîchir que si > 1h
+
+    # --- Installation de Nginx ---
+    - name: Installer Nginx
+      ansible.builtin.apt:
+        name: nginx      # TODO 3 : Le nom du package est nginx
+        state: present
+
+    # --- Vérifier que Nginx tourne ---
+    - name: S'assurer que Nginx est démarré et activé au boot
+      ansible.builtin.service:
+        name: nginx
+        state: started   # TODO 4 : 'started' pour lancer le service
+        enabled: true
+
+    # --- Déployer une page d'accueil personnalisée ---
+    - name: Déployer la page d'accueil NovaSphere
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>NovaSphere</title>
+              <style>
+                  body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+                  h1 { color: #2c3e50; }
+              </style>
+          </head>
+          <body>
+              <h1>Bienvenue sur NovaSphere</h1>
+              <p>Serveur configuré automatiquement par Ansible.</p>
+              <p>Environnement : <strong>dev</strong></p>
+          </body>
+          </html>
+        owner: www-data
+        group: www-data
+        mode: "0644"
