@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ project_name | capitalize }} - {{ environment }}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding-top: 100px; background-color: #f4f7f6; }
+        .container { background: white; padding: 40px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; margin-bottom: 20px; }
+        .env-badge { background-color: {{ 'red' if environment == 'prod' else '#3498db' }}; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .footer { margin-top: 30px; color: #7f8c8d; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenue sur {{ project_name }}</h1>
+        <p>Ce serveur a été configuré automatiquement avec <strong>Ansible</strong>.</p>
+        <p>Environnement actuel : <span class="env-badge">{{ environment }}</span></p>
+        <p>Version du déploiement : <strong>{{ app_version }}</strong></p>
+        <div class="footer">
+            Déployé le : {{ ansible_date_time.date }} à {{ ansible_date_time.time }}
+        </div>
+    </div>
+</body>
+</html>

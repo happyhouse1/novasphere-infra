@@ -1,0 +1,4 @@
+---
+project_name: "NovaSphere"
+environment: "dev"
+app_version: "3.0" # On monte la version pour marquer le passage aux roles
