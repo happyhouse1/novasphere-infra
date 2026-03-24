@@ -2,6 +2,16 @@
 - name: Configuration du serveur web NovaSphere
   hosts: webservers
   become: true
+
+  vars_files:
+    - vault/secrets.yml
+
   roles:
     - role: common
     - role: webserver
+
+  tasks:
+    - name: Afficher que les secrets sont chargés (sans les révéler)
+      ansible.builtin.debug:
+        msg: "Le mot de passe DB fait {{ db_password | length }} caractères"
+      tags: [vault-test]

@@ -1,0 +1,10 @@
+# Généré automatiquement par Terraform — NE PAS MODIFIER MANUELLEMENT
+---
+all:
+  children:
+    webservers:
+      hosts:
+        web01:
+          ansible_host: ${web_ip}
+          ansible_user: ${ssh_user}
+          ansible_ssh_private_key_file: ${ssh_key}

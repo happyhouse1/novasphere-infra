@@ -45,3 +45,9 @@ variable "allowed_ssh_cidr" {
   type        = string
   default     = "0.0.0.0/0"
 }
+
+variable "ssh_private_key_path" {
+  description = "Chemin vers la clé privée SSH pour Ansible"
+  type        = string
+  default     = "~/.ssh/novasphere"
+}

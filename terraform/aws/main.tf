@@ -60,3 +60,13 @@ resource "aws_instance" "web" {
     Name = "${local.name_prefix}-web"
   })
 }
+
+resource "local_file" "ansible_inventory" {
+  content = templatefile("${path.module}/templates/inventory.tftpl", {
+    web_ip   = aws_instance.web.public_ip
+    ssh_user = "ubuntu"
+    ssh_key  = var.ssh_private_key_path
+  })
+  filename        = "${path.module}/../../ansible/inventory/hosts_generated.yml"
+  file_permission = "0644"
+}

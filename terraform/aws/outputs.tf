@@ -22,3 +22,8 @@ output "security_group_id" {
   description = "ID du Security Group"
   value       = aws_security_group.web.id
 }
+
+output "ansible_inventory_path" {
+  description = "Chemin vers l'inventaire Ansible généré"
+  value       = local_file.ansible_inventory.filename
+}
