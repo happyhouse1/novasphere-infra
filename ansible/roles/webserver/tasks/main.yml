@@ -1,20 +1,76 @@
 ---
-- name: Installer Nginx
+- name: Installer les paquets requis
   ansible.builtin.apt:
-    name: nginx
+    name: "{{ web_packages }}"
     state: present
+  tags: [install]
 
-- name: S'assurer que Nginx est démarré et activé au boot
+- name: S'assurer que Nginx est démarré et activé
   ansible.builtin.service:
     name: nginx
     state: started
     enabled: true
+  tags: [config]
 
-- name: Déployer la page d'accueil NovaSphere (Via Role Template)
+- name: Déployer la configuration du virtual host
+  ansible.builtin.template:
+    src: novasphere.conf.j2
+    dest: /etc/nginx/sites-available/novasphere.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Redémarrer Nginx
+  tags: [config, nginx]
+
+- name: Activer le virtual host NovaSphere
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/novasphere.conf
+    dest: /etc/nginx/sites-enabled/novasphere.conf
+    state: link
+  notify: Redémarrer Nginx
+  tags: [config, nginx]
+
+- name: Supprimer le virtual host par défaut
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Redémarrer Nginx
+  tags: [config, nginx]
+
+- name: Créer le répertoire racine du site
+  ansible.builtin.file:
+    path: "{{ nginx_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+  tags: [deploy]
+
+- name: Déployer la page d'accueil NovaSphere
   ansible.builtin.template:
     src: index.html.j2
-    dest: /var/www/html/index.html
+    dest: "{{ nginx_root }}/index.html"
     owner: www-data
     group: www-data
     mode: "0644"
-  notify: Redémarrer Nginx
+  tags: [deploy]
+
+- name: Installer les outils de debug
+  ansible.builtin.apt:
+    name:
+      - strace
+      - tcpdump
+      - net-tools
+    state: present
+  when: env == "dev"
+  tags: [debug]
+
+- name: Créer les utilisateurs applicatifs
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    comment: "{{ item.comment }}"
+    shell: "{{ item.shell }}"
+    create_home: true
+    state: present
+  loop: "{{ app_users }}"
+  tags: [users]

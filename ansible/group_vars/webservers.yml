@@ -3,14 +3,18 @@ app_name: "NovaSphere"
 app_version: "2.0"
 env: "dev"
 http_port: 80
+
+# Paquets à installer
 web_packages:
   - nginx
   - curl
   - htop
   - tree
   - jq
+
+# Configuration Nginx
 nginx_server_name: "_"
-nginx_root: "/var/www/html"
+nginx_root: "/var/www/novasphere"
 
 # Utilisateurs applicatifs à créer
 app_users:
