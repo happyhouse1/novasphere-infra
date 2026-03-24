@@ -1,0 +1,13 @@
+---
+app_name: "NovaSphere"
+app_version: "2.0"
+env: "dev"
+http_port: 80
+web_packages:
+  - nginx
+  - curl
+  - htop
+  - tree
+  - jq
+nginx_server_name: "_"
+nginx_root: "/var/www/html"

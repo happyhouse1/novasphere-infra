@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} - Statut</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .footer { margin-top: 2rem; font-size: 0.8rem; color: #777; border-top: 1px solid #eee; pt: 1rem; }
+        .env-badge { padding: 4px 8px; background: #e1f5fe; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    {# Généré par Ansible - Ne pas modifier manuellement #}
+    <h1>{{ app_name }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Information</th>
+                <th>Valeur</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Environnement</strong></td>
+                <td><span class="env-badge">{{ env }}</span></td>
+            </tr>
+            <tr>
+                <td><strong>Version</strong></td>
+                <td>{{ app_version }}</td>
+            </tr>
+            <tr>
+                <td><strong>Serveur</strong></td>
+                <td>{{ inventory_hostname }}</td>
+            </tr>
+            <tr>
+                <td><strong>IP</strong></td>
+                <td>{{ ansible_host }}</td>
+            </tr>
+            <tr>
+                <td><strong>Paquets installés</strong></td>
+                <td>
+                    {{ web_packages | join(', ') }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="footer">
+        Page générée par Ansible le {{ ansible_date_time.date }} à {{ ansible_date_time.time }} — Ne pas modifier manuellement.
+    </p>
+</body>
+</html>

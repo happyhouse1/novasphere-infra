@@ -1,8 +1,58 @@
 ---
 - name: Configuration du serveur web NovaSphere
-  hosts: webservers  # TODO 2 : Groupe défini dans ton inventory/hosts.yml
-  become: true      # Exécuter en sudo pour installer des paquets
-  
-  roles:
-    - common
-    - webserver
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Mettre a jour le cache APT
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Installer les paquets requis
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ web_packages }}"
+
+    - name: Demarrer Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Deployer la configuration du virtual host
+      ansible.builtin.template:
+        src: templates/novasphere.conf.j2
+        dest: /etc/nginx/sites-available/novasphere.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Redemarrer Nginx
+
+    - name: Activer le virtual host NovaSphere
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/novasphere.conf
+        dest: /etc/nginx/sites-enabled/novasphere.conf
+        state: link
+      notify: Redemarrer Nginx
+
+    - name: Supprimer le virtual host par defaut
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Redemarrer Nginx
+
+    - name: Deployer la page d accueil NovaSphere
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{ nginx_root }}/index.html"
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+  handlers:
+    - name: Redemarrer Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
